@@ -12,7 +12,7 @@ This extension adds some useful adapters for the [`league/flysystem`](https://gi
 You can install the client with [Composer](https://getcomposer.org/):
 
 ```bash
-composer require elgigi/flysystem-usefull-adapters
+composer require elgigi/flysystem-useful-adapters
 ```
 
 ## Adapters
