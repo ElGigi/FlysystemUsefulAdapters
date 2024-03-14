@@ -21,7 +21,7 @@ composer require elgigi/flysystem-useful-adapters
 
 The `FallbackAdapter` adapter allow to write or read on a fallback adapter.
 
-Imagine that your main adapter is a S3 in an unavailable region, to continu to receive files from your customers, you
+Imagine that your main adapter is a S3 in an unavailable region, to continue to receive files from your customers, you
 can use a fallback adapter on another region.
 
 ### LogAdapter
