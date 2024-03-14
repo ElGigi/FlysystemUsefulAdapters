@@ -1,5 +1,10 @@
 # FlysytemUsefulAdapters
 
+[![Latest Version](http://img.shields.io/packagist/v/elgigi/flysystem-useful-adapters.svg?style=flat-square)](https://github.com/ElGigi/FlysystemUsefulAdapters/releases)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/ElGigi/FlysystemUsefulAdapters/tests.yml?branch=main&style=flat-square)](https://github.com/ElGigi/FlysystemUsefulAdapters/actions/workflows/tests.yml?query=branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/elgigi/flysystem-useful-adapters.svg?style=flat-square)](https://packagist.org/packages/elgigi/flysystem-useful-adapters)
+
 This extension adds some useful adapters for the [`league/flysystem`](https://github.com/thephpleague/flysystem) library.
 
 ## Installation
