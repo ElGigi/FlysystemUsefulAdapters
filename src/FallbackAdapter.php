@@ -35,10 +35,20 @@ class FallbackAdapter extends CallableAdapter
     protected function callAdapter(string $method, array $args, ?Closure $callback = null): mixed
     {
         $adapterException = null;
+        $nbAdapters = count($this->adapters);
+        $count = 0;
 
         foreach ($this->adapters as $adapter) {
+            $count++;
+
             try {
-                return $adapter->{$method}(...$args);
+                $result = $adapter->{$method}(...$args);
+
+                if (false === $result && $count < $nbAdapters) {
+                    continue;
+                }
+
+                return $result;
             } catch (Throwable $exception) {
                 $adapterException = $exception;
             }
