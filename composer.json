@@ -24,5 +24,8 @@
     "psr/log": "^1.0 || ^2.0 || ^3.0",
     "league/flysystem-adapter-test-utilities": "^3.21",
     "league/flysystem-memory": "^3.24"
+  },
+  "suggest": {
+    "psr/log": "Required to use the LogAdapter (^1.0 || ^2.0 || ^3.0)"
   }
 }
