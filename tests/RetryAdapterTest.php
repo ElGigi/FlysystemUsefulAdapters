@@ -64,4 +64,23 @@ class RetryAdapterTest extends FilesystemAdapterTestCase
 
         new RetryAdapter(new InMemoryFilesystemAdapter(), time: -1);
     }
+
+    public function testConstructorRejectsMultiplierBelowOne()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new RetryAdapter(new InMemoryFilesystemAdapter(), multiplier: 0.5);
+    }
+
+    public function testSucceedWithMultiplier()
+    {
+        $adapter = new RetryAdapter(
+            adapter: new FailureAdapter(new InMemoryFilesystemAdapter(), 2),
+            time: 1,
+            retry: 3,
+            multiplier: 2.0,
+        );
+
+        $this->assertFalse($adapter->fileExists('fake'));
+    }
 }

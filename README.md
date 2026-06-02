@@ -121,8 +121,10 @@ The `RetryAdapter` allows you to retry an action on a filesystem in case of fail
 of times.
 
 The second argument `$time` is the delay between attempts, in **milliseconds** (default `5000`). The third argument
-`$retry` is the total number of attempts (default `2`, minimum `1`). No delay is applied after the last attempt; if all
-attempts fail, the last exception is rethrown.
+`$retry` is the total number of attempts (default `2`, minimum `1`). The fourth argument `$multiplier` (default `1.0`,
+minimum `1`) applies an exponential backoff: the delay for attempt `n` is `time * multiplier^n` (e.g. with
+`time: 1000` and `multiplier: 2.0`, delays are 1000 ms, then 2000 ms, then 4000 ms…). A multiplier of `1.0` keeps a
+constant delay. No delay is applied after the last attempt; if all attempts fail, the last exception is rethrown.
 
 ```php
 use ElGigi\FlysystemUsefulAdapters\RetryAdapter;
@@ -130,6 +132,9 @@ use League\Flysystem\Filesystem;
 
 // Retry up to 3 times, waiting 1000 ms between attempts
 $adapter = new RetryAdapter($innerAdapter, time: 1000, retry: 3);
+
+// Exponential backoff: 1000 ms, then 2000 ms between attempts
+$adapter = new RetryAdapter($innerAdapter, time: 1000, retry: 3, multiplier: 2.0);
 
 $fs = new Filesystem($adapter);
 ```

@@ -24,6 +24,7 @@ class RetryAdapter extends CallableAdapter
         private FilesystemAdapter $adapter,
         private int $time = 5000,
         private int $retry = 2,
+        private float $multiplier = 1.0,
     ) {
         if ($this->retry < 1) {
             throw new InvalidArgumentException('Retry count must be at least 1');
@@ -31,6 +32,10 @@ class RetryAdapter extends CallableAdapter
 
         if ($this->time < 0) {
             throw new InvalidArgumentException('Time must be a positive integer');
+        }
+
+        if ($this->multiplier < 1) {
+            throw new InvalidArgumentException('Multiplier must be greater than or equal to 1');
         }
     }
 
@@ -57,7 +62,7 @@ class RetryAdapter extends CallableAdapter
 
             // Do not sleep after the last attempt
             if ($i < $this->retry - 1) {
-                usleep($this->time * 1000);
+                usleep((int)($this->time * ($this->multiplier ** $i) * 1000));
             }
         }
 

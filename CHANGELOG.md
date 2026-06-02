@@ -9,6 +9,7 @@ use [Keep a Changelog] (http://keepachangelog.com/).
 ### Added
 
 - `IgnoreFilesystemAdapter` filtering entries based on `.gitignore`-style ignore files (cascade, negation, `**`, directory-only), with a `$strict` mode and support for multiple ignore filenames
+- `RetryAdapter` now supports a `$multiplier` argument enabling exponential backoff between attempts
 - Suggest `psr/log` dependency, required to use the `LogAdapter`
 
 ### Fixed
