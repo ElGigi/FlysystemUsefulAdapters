@@ -19,10 +19,23 @@ composer require elgigi/flysystem-useful-adapters
 
 ### FallbackAdapter
 
-The `FallbackAdapter` adapter allow to write or read on a fallback adapter.
+The `FallbackAdapter` allows you to read from or write to a fallback adapter when the primary one fails.
 
-Imagine that your main adapter is a S3 in an unavailable region, to continue to receive files from your customers, you
-can use a fallback adapter on another region.
+Imagine that your main adapter is an S3 bucket in an unavailable region; to continue to receive files from your
+customers, you can use a fallback adapter on another region.
+
+Adapters are tried in the order they are given until one succeeds. If every adapter throws, the last exception is
+rethrown.
+
+```php
+use ElGigi\FlysystemUsefulAdapters\FallbackAdapter;
+use League\Flysystem\Filesystem;
+
+// First argument is the primary adapter, the following ones are fallbacks (tried in order)
+$adapter = new FallbackAdapter($primaryAdapter, $fallbackAdapter, $anotherFallbackAdapter);
+
+$fs = new Filesystem($adapter);
+```
 
 ### IgnoreFilesystemAdapter
 
@@ -61,12 +74,62 @@ The ignore files themselves are always hidden from `listContents()` but remain r
 
 ### LogAdapter
 
-The `LogAdapter` is compliant with `psr/log`, and allow to log actions on file systems.
+The `LogAdapter` is compliant with `psr/log` and allows you to log actions performed on a filesystem.
+
+Each operation is logged with a level that depends on its nature: write-type operations (`write`, `writeStream`,
+`copy`, `move`, `delete`, `deleteDirectory`, `createDirectory`, `setVisibility`) are logged at the `notice` level,
+read and metadata operations at the `debug` level, and any failure at the `error` level.
+
+```php
+use ElGigi\FlysystemUsefulAdapters\LogAdapter;
+use League\Flysystem\Filesystem;
+
+// $logger is any PSR-3 Psr\Log\LoggerInterface implementation
+$adapter = new LogAdapter($innerAdapter, $logger);
+
+// The logger can also be injected later via setLogger()
+$adapter = new LogAdapter($innerAdapter);
+$adapter->setLogger($logger);
+
+$fs = new Filesystem($adapter);
+```
 
 ### ReadWriteAdapter
 
-The `ReadWriteAdapter` adapter allow to separate readers and writers adapters.
+The `ReadWriteAdapter` allows you to separate reader and writer adapters.
+
+Write methods (`write`, `writeStream`, `delete`, `copy`, `move`, `createDirectory`, `deleteDirectory`,
+`setVisibility`) are routed to the writer adapters, while all other (read/metadata) methods are routed to the reader
+adapters. Readers are automatically wrapped as read-only to ensure no write happens through them. At least one reader
+and one writer are required.
+
+```php
+use ElGigi\FlysystemUsefulAdapters\ReadWriteAdapter;
+use League\Flysystem\Filesystem;
+
+$adapter = new ReadWriteAdapter(
+    readers: [$readReplicaAdapter],
+    writers: [$primaryAdapter],
+);
+
+$fs = new Filesystem($adapter);
+```
 
 ### RetryAdapter
 
-The `RetryAdapter` adapter allow to retry an action on file system in case of failure, after a delay and X times.
+The `RetryAdapter` allows you to retry an action on a filesystem in case of failure, after a delay and a given number
+of times.
+
+The second argument `$time` is the delay between attempts, in **milliseconds** (default `5000`). The third argument
+`$retry` is the total number of attempts (default `2`, minimum `1`). No delay is applied after the last attempt; if all
+attempts fail, the last exception is rethrown.
+
+```php
+use ElGigi\FlysystemUsefulAdapters\RetryAdapter;
+use League\Flysystem\Filesystem;
+
+// Retry up to 3 times, waiting 1000 ms between attempts
+$adapter = new RetryAdapter($innerAdapter, time: 1000, retry: 3);
+
+$fs = new Filesystem($adapter);
+```
