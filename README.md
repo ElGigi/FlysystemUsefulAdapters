@@ -24,6 +24,41 @@ The `FallbackAdapter` adapter allow to write or read on a fallback adapter.
 Imagine that your main adapter is a S3 in an unavailable region, to continue to receive files from your customers, you
 can use a fallback adapter on another region.
 
+### IgnoreFilesystemAdapter
+
+The `IgnoreFilesystemAdapter` decorates an adapter and filters entries based on `.gitignore`-style ignore files
+(e.g. `.docignore`). Patterns follow the gitignore syntax (negation with `!`, anchoring with `/`, `**`,
+directory-only with a trailing `/`, character classes…) and are resolved as a cascade: an ignore file placed in a
+subdirectory applies to that subtree, overriding the rules of parent directories.
+
+```php
+use ElGigi\FlysystemUsefulAdapters\IgnoreFilesystemAdapter;
+use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
+
+$inner = new LocalFilesystemAdapter('/path');
+
+// Read rules from .docignore files
+$adapter = new IgnoreFilesystemAdapter($inner, '.docignore');
+
+// Several ignore filenames can be provided (rules are concatenated in order)
+$adapter = new IgnoreFilesystemAdapter($inner, ['.docignore', '.exportignore']);
+
+$fs = new Filesystem($adapter);
+```
+
+The third argument `$strict` (default `true`) controls how ignored paths behave:
+
+- `$strict = true`: an ignored path is treated as if it does not exist for **every** operation
+  (`read`/`write`/metadata throw the relevant exception, `fileExists` returns `false`, `delete` is a no-op).
+- `$strict = false`: only `listContents()` is filtered; direct accesses are passed through to the inner adapter.
+
+```php
+$adapter = new IgnoreFilesystemAdapter($inner, '.docignore', strict: false);
+```
+
+The ignore files themselves are always hidden from `listContents()` but remain readable.
+
 ### LogAdapter
 
 The `LogAdapter` is compliant with `psr/log`, and allow to log actions on file systems.
