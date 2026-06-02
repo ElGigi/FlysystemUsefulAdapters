@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace ElGigi\FlysystemUsefulAdapters;
 
 use Closure;
+use InvalidArgumentException;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\FilesystemException;
 use League\Flysystem\ReadOnly\ReadOnlyFilesystemAdapter;
@@ -25,12 +26,23 @@ class ReadWriteAdapter extends CallableAdapter
 
     public function __construct(array $readers, array $writers)
     {
+        $readers = array_filter($readers, fn($adapter) => $adapter instanceof FilesystemAdapter);
+        $writers = array_filter($writers, fn($adapter) => $adapter instanceof FilesystemAdapter);
+
+        if (empty($readers)) {
+            throw new InvalidArgumentException('At least one reader adapter is required');
+        }
+
+        if (empty($writers)) {
+            throw new InvalidArgumentException('At least one writer adapter is required');
+        }
+
         // Make readers as readonly to ensure no write on them
         $this->readers = array_map(
             fn(FilesystemAdapter $adapter) => new ReadOnlyFilesystemAdapter($adapter),
-            array_filter($readers, fn($adapter) => $adapter instanceof FilesystemAdapter),
+            $readers,
         );
-        $this->writers = array_filter($writers, fn($adapter) => $adapter instanceof FilesystemAdapter);
+        $this->writers = $writers;
     }
 
     /**
