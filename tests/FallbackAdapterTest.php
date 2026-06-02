@@ -41,4 +41,26 @@ class FallbackAdapterTest extends FilesystemAdapterTestCase
         $this->assertTrue($fallback->fileExists('foo/baz'));
         $this->assertTrue($fallback->fileExists('foo/bar'));
     }
+
+    public function testFileDoesNotExistOnAnyAdapter()
+    {
+        $fallback = new FallbackAdapter(
+            new InMemoryFilesystemAdapter(),
+            new InMemoryFilesystemAdapter(),
+        );
+
+        $this->assertFalse($fallback->fileExists('foo/baz'));
+    }
+
+    public function testFalseResultIsReturnedEvenIfLastAdapterThrows()
+    {
+        // First adapter answers FALSE (file not found), last adapter throws.
+        // The legitimate FALSE result must be returned, not the exception.
+        $fallback = new FallbackAdapter(
+            new InMemoryFilesystemAdapter(),
+            new FailureAdapter(new InMemoryFilesystemAdapter()),
+        );
+
+        $this->assertFalse($fallback->fileExists('foo/baz'));
+    }
 }

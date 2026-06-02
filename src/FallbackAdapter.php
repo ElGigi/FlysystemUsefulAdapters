@@ -35,16 +35,16 @@ class FallbackAdapter extends CallableAdapter
     protected function callAdapter(string $method, array $args, ?Closure $callback = null): mixed
     {
         $adapterException = null;
-        $nbAdapters = count($this->adapters);
-        $count = 0;
+        $lastResult = false;
+        $hasResult = false;
 
         foreach ($this->adapters as $adapter) {
-            $count++;
-
             try {
                 $result = $adapter->{$method}(...$args);
+                $lastResult = $result;
+                $hasResult = true;
 
-                if (false === $result && $count < $nbAdapters) {
+                if (false === $result) {
                     continue;
                 }
 
@@ -59,6 +59,11 @@ class FallbackAdapter extends CallableAdapter
                     throw $adapterException;
                 }
             }
+        }
+
+        // At least one adapter answered (even with a FALSE result): stay transparent
+        if ($hasResult) {
+            return $lastResult;
         }
 
         throw $adapterException;
