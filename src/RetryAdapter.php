@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace ElGigi\FlysystemUsefulAdapters;
 
 use Closure;
+use InvalidArgumentException;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\FilesystemException;
 use Throwable;
@@ -24,6 +25,13 @@ class RetryAdapter extends CallableAdapter
         private int $time = 5000,
         private int $retry = 2,
     ) {
+        if ($this->retry < 1) {
+            throw new InvalidArgumentException('Retry count must be at least 1');
+        }
+
+        if ($this->time < 0) {
+            throw new InvalidArgumentException('Time must be a positive integer');
+        }
     }
 
     /**
@@ -46,7 +54,11 @@ class RetryAdapter extends CallableAdapter
                     throw $adapterException;
                 }
             }
-            usleep($this->time * 1000);
+
+            // Do not sleep after the last attempt
+            if ($i < $this->retry - 1) {
+                usleep($this->time * 1000);
+            }
         }
 
         throw $adapterException;

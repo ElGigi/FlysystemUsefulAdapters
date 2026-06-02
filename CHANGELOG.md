@@ -13,6 +13,7 @@ use [Keep a Changelog] (http://keepachangelog.com/).
 ### Fixed
 
 - `FallbackAdapter` no longer throws `null` and returns the last result (even `false`) when every adapter answered, instead of re-throwing an exception raised by the last adapter
+- `RetryAdapter` now validates its `retry` (>= 1) and `time` (>= 0) constructor arguments and no longer sleeps after the last attempt
 
 ## [1.0.1] - 2024-03-20
 

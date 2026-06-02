@@ -11,6 +11,7 @@
 namespace ElGigi\FlysystemUsefulAdapters\Tests;
 
 use ElGigi\FlysystemUsefulAdapters\RetryAdapter;
+use InvalidArgumentException;
 use League\Flysystem\AdapterTestUtilities\FilesystemAdapterTestCase;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
@@ -37,5 +38,30 @@ class RetryAdapterTest extends FilesystemAdapterTestCase
 
         $this->expectException(Exception::class);
         $adapter->read('fake');
+    }
+
+    public function testSucceedAfterFailures()
+    {
+        $adapter = new RetryAdapter(
+            adapter: new FailureAdapter(new InMemoryFilesystemAdapter(), 2),
+            time: 1,
+            retry: 3,
+        );
+
+        $this->assertFalse($adapter->fileExists('fake'));
+    }
+
+    public function testConstructorRejectsRetryBelowOne()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new RetryAdapter(new InMemoryFilesystemAdapter(), retry: 0);
+    }
+
+    public function testConstructorRejectsNegativeTime()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new RetryAdapter(new InMemoryFilesystemAdapter(), time: -1);
     }
 }
