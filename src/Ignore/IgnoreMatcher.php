@@ -36,7 +36,7 @@ final class IgnoreMatcher
      * @param string|string[] $ignoreFilenames
      */
     public function __construct(
-        private readonly FilesystemAdapter $adapter,
+        private FilesystemAdapter $adapter,
         string|array $ignoreFilenames = '.gitignore',
     ) {
         $names = is_array($ignoreFilenames) ? array_values($ignoreFilenames) : [$ignoreFilenames];

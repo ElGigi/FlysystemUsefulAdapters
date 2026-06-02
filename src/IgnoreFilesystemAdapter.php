@@ -53,7 +53,7 @@ class IgnoreFilesystemAdapter extends DecoratedAdapter
     public function __construct(
         FilesystemAdapter $adapter,
         string|array $ignoreFilenames = '.gitignore',
-        private readonly bool $strict = true,
+        private bool $strict = true,
     ) {
         parent::__construct($adapter);
 

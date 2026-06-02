@@ -21,9 +21,9 @@ namespace ElGigi\FlysystemUsefulAdapters\Ignore;
 final class IgnoreRule
 {
     private function __construct(
-        private readonly bool $negated,
-        private readonly bool $directoryOnly,
-        private readonly ?string $regex,
+        private bool $negated,
+        private bool $directoryOnly,
+        private ?string $regex,
     ) {
     }
 

@@ -29,7 +29,7 @@ final class IgnoreFile
      * @param IgnoreRule[] $rules
      */
     public function __construct(
-        private readonly string $baseDir,
+        private string $baseDir,
         array $rules = [],
     ) {
         $this->rules = $rules;
