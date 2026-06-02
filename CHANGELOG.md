@@ -15,6 +15,7 @@ use [Keep a Changelog] (http://keepachangelog.com/).
 - `FallbackAdapter` no longer throws `null` and returns the last result (even `false`) when every adapter answered, instead of re-throwing an exception raised by the last adapter
 - `RetryAdapter` now validates its `retry` (>= 1) and `time` (>= 0) constructor arguments and no longer sleeps after the last attempt
 - `ReadWriteAdapter` now requires at least one reader and one writer adapter, preventing a `null` exception when a list is empty
+- `LogAdapter` removed unreachable dead code in the log level resolution
 
 ## [1.0.1] - 2024-03-20
 

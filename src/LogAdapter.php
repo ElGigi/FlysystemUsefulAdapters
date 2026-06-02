@@ -71,10 +71,6 @@ class LogAdapter extends CallableAdapter implements LoggerAwareInterface
             },
         };
 
-        if (null === $level) {
-            return;
-        }
-
         $this->logger?->log(
             $level,
             match ($method) {
