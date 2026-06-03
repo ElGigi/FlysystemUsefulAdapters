@@ -6,6 +6,8 @@ use [Keep a Changelog] (http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-06-03
+
 ### Added
 
 - `IgnoreFilesystemAdapter` filtering entries based on `.gitignore`-style ignore files (cascade, negation, `**`, directory-only), with a `$strict` mode and support for multiple ignore filenames
