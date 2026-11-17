@@ -76,7 +76,7 @@ class ReadWriteAdapter extends CallableAdapter
 
         foreach ($this->getAdapters($method) as $adapter) {
             try {
-                return $adapter->{$method}(...$args);
+                return $adapter->{$method}(...array_values($args));
             } catch (Throwable $exception) {
                 $adapterException = $exception;
             }

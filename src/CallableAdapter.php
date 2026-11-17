@@ -31,6 +31,9 @@ abstract class CallableAdapter implements FilesystemAdapter
     /**
      * Call adapter.
      *
+     * Argument keys are internal metadata; invoke wrapped adapters positionally
+     * because implementations may use different parameter names.
+     *
      * @param string $method
      * @param array $args
      * @param Closure|null $callback

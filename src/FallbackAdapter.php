@@ -40,7 +40,7 @@ class FallbackAdapter extends CallableAdapter
 
         foreach ($this->adapters as $adapter) {
             try {
-                $result = $adapter->{$method}(...$args);
+                $result = $adapter->{$method}(...array_values($args));
                 $lastResult = $result;
                 $hasResult = true;
 

@@ -6,6 +6,10 @@ use [Keep a Changelog] (http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Forward wrapped adapter arguments positionally in `FallbackAdapter`, `RetryAdapter`, `LogAdapter` and `ReadWriteAdapter`, fixing named-argument errors with `LocalFilesystemAdapter` (#2)
+
 ## [1.1.0] - 2026-06-03
 
 ### Added
