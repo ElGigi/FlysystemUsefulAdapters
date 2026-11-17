@@ -48,7 +48,7 @@ class RetryAdapter extends CallableAdapter
 
         for ($i = 0; $i < $this->retry; $i++) {
             try {
-                return $this->adapter->{$method}(...$args);
+                return $this->adapter->{$method}(...array_values($args));
             } catch (Throwable $exception) {
                 $adapterException = $exception;
             }

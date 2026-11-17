@@ -37,7 +37,7 @@ class LogAdapter extends CallableAdapter implements LoggerAwareInterface
     {
         $exception = null;
         try {
-            return $this->adapter->{$method}(...$args);
+            return $this->adapter->{$method}(...array_values($args));
         } catch (Throwable $exception) {
             throw $exception;
         } finally {
